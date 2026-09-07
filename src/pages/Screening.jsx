@@ -2,8 +2,8 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { analyzeImage } from '../utils/roboflow'
 import { SYMPTOMS } from '../constants/anemiaData'
+import { analyzeImage } from '../utils/api'
 
 export default function Screening() {
   const navigate = useNavigate()
@@ -49,10 +49,18 @@ export default function Screening() {
     setError(null)
 
     try {
-      const result = await analyzeImage(imageFile)
-      navigate('/result', { state: { ...result, symptoms_analyzed: selectedSymptoms, image: imagePreview } })
+      const data = await analyzeImage(imageFile)
+      navigate('/result', {
+        state: {
+          result: data.result,
+          predicted_class: data.result,
+          confidence: data.confidence,
+          symptoms_analyzed: selectedSymptoms,
+          image: imagePreview
+        }
+      })
     } catch (err) {
-      setError(err.message || 'Analysis failed. Please try a clearer image.')
+      setError(err.message || 'Could not connect to Flask AI server at http://localhost:5000. Please make sure python app.py is running.')
     } finally {
       setLoading(false)
     }

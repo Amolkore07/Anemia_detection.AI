@@ -35,7 +35,7 @@ export default function Home() {
             {
               icon: '🤖',
               title: 'AI Vision Detection',
-              desc: 'Roboflow AI model analyzes pallor signs in the image.',
+              desc: 'Trained CNN deep learning model analyzes pallor signs in the image.',
             },
             {
               icon: '📋',
@@ -72,7 +72,7 @@ export default function Home() {
             {[
               'Non-invasive — no blood test needed',
               'Designed for rural school girls in India',
-              'Powered by a Roboflow AI vision model',
+              'Powered by a trained TensorFlow CNN model',
               'Works on any phone with a camera',
               'Instant results — no lab wait times',
               'Free and offline-friendly for screening',

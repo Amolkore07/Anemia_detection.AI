@@ -38,3 +38,13 @@ yarn-error.log*
 pnpm-debug.log*
 vite.config.js.timestamp*
 
+# Python & Virtual Environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.h5
+
+

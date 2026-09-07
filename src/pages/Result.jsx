@@ -8,7 +8,8 @@ export default function Result() {
   const navigate = useNavigate()
 
   const state = location.state || {}
-  const detail = CLASS_MAP[state.predicted_class] || DEFAULT_RESULT_DETAIL
+  const detectedResult = state.result || state.predicted_class || '—'
+  const detail = CLASS_MAP[detectedResult] || DEFAULT_RESULT_DETAIL
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-pink-50 flex flex-col">
@@ -37,8 +38,8 @@ export default function Result() {
 
         {/* Detected class */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-brand-100 mb-6">
-          <h2 className="text-sm font-semibold text-gray-700 mb-2">Detected Class</h2>
-          <p className="text-2xl font-extrabold text-gray-800">{state.predicted_class || '—'}</p>
+          <h2 className="text-sm font-semibold text-gray-700 mb-2">Detected Result</h2>
+          <p className="text-2xl font-extrabold text-gray-800">{detectedResult}</p>
         </div>
 
         {/* Confidence */}

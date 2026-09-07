@@ -17,6 +17,16 @@ export const CLASS_MAP = {
     recommendation: 'Maintain a balanced iron-rich diet. Routine monthly checkup recommended.',
     icon: '✅',
   },
+  'Non-Anemic': {
+    risk: 'Low Risk',
+    color: '#16A34A',
+    bg: '#F0FDF4',
+    border: '#BBF7D0',
+    badge: 'bg-green-100 text-green-700',
+    hb: '12–14 g/dL',
+    recommendation: 'Maintain a balanced iron-rich diet. Routine monthly checkup recommended.',
+    icon: '✅',
+  },
   'anemia-desises': {
     risk: 'Moderate Risk',
     color: '#EA580C',

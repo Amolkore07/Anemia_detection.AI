@@ -1,90 +1,182 @@
-# HerHealth — AI Anemia Screening App
+# HerHealth: Non-Invasive AI Anemia Screening System
 
-An AI-powered, non-invasive anemia screening web application designed for adolescent girls and rural communities. By analyzing images of the lower conjunctiva (eyelid) or fingernails, HerHealth offers fast risk assessment and guidance without invasive blood testing.
+HerHealth is an automated, non-invasive anemia screening system designed to assess anemia risk using deep learning. The platform analyzes photographic images of the palpebral conjunctiva (inner lower eyelid) or fingernail beds to provide instant risk classification, estimated hemoglobin levels, and clinical recommendations.
 
----
-
-## 🌟 Key Features
-
-- **Non-Invasive Vision AI**: Leverages computer vision models to detect paleness in fingernails and conjunctiva.
-- **Symptom Cross-Check**: Screen with common anemia symptoms (fatigue, dizziness, pale skin, etc.).
-- **Immediate Triage**: Categorizes results into Low, Moderate, or High Risk with estimated hemoglobin ranges and recommended medical next steps.
-- **Responsive & Lightweight**: Built with Vite and TailwindCSS for ultra-fast load times on mobile and low-bandwidth networks.
+The architecture comprises a React-based single-page web interface integrated with a Flask REST backend serving a Convolutional Neural Network (CNN) trained with TensorFlow/Keras.
 
 ---
 
-## 📁 Project Structure
+## Architecture Overview
+
+1. **Client Interface (Frontend)**
+   - Framework: React 18, Vite, TailwindCSS
+   - Responsibilities: User interface, conjunctiva image capture/upload, clinical symptom logging, and reporting.
+
+2. **Inference Engine (Backend)**
+   - Framework: Python Flask, Flask-CORS
+   - Framework Engine: TensorFlow / Keras, Pillow, NumPy
+   - Model: `model_anemia.h5` (Convolutional Neural Network)
+   - Input: Preprocessed RGB image (64x64 pixels)
+   - Output: Binary classification (`Anemic` or `Non-Anemic`) and confidence score.
+
+---
+
+## Project Structure
 
 ```text
 anemia_app/
-├── public/                 # Static assets (favicons, icons)
+├── app.py                  # Flask REST API backend
+├── model_anemia.h5         # Trained Keras model weights
+├── requirements.txt        # Python backend dependencies
+├── package.json            # Node.js frontend dependencies
+├── vite.config.js          # Vite build configuration
+├── tailwind.config.js      # TailwindCSS styling configuration
+├── index.html              # Web entry HTML
+├── public/                 # Static web assets
 │   └── favicon.svg
 ├── src/
+│   ├── App.jsx             # Client routing configuration
+│   ├── main.jsx            # React root mount
+│   ├── index.css           # Global CSS styles
 │   ├── components/         # Reusable UI components
 │   │   ├── Navbar.jsx
 │   │   └── Footer.jsx
-│   ├── constants/          # Application data & mapping configs
+│   ├── constants/          # Medical thresholds and symptom definitions
 │   │   └── anemiaData.js
 │   ├── pages/              # Application views
-│   │   ├── Home.jsx        # Landing page
-│   │   ├── Screening.jsx   # Photo upload & symptom checklist
-│   │   └── Result.jsx      # AI assessment & clinical guidance
-│   ├── utils/              # API and helper utilities
-│   │   └── roboflow.js     # Roboflow inference integration
-│   ├── App.jsx             # React routing setup
-│   ├── index.css           # Global Tailwind styling
-│   └── main.jsx            # React root entry point
-├── .env.example            # Environment variables template
-├── .gitignore              # Git ignore rules
-├── index.html              # HTML entry point
-├── package.json            # Dependencies and scripts
-├── postcss.config.js       # PostCSS configuration
-├── tailwind.config.js      # TailwindCSS styling configuration
-└── vite.config.js          # Vite build configuration
+│   │   ├── Home.jsx        # Landing and informational view
+│   │   ├── Screening.jsx   # Image upload and symptom collection
+│   │   └── Result.jsx      # Diagnostic report and triage guidance
+│   └── utils/
+│       └── api.js          # HTTP client for Flask /predict API
+├── .env.example            # Environment variables configuration template
+└── .gitignore              # Git ignore configuration
 ```
 
 ---
 
-## 🚀 Getting Started
+## Prerequisites
 
-### 1. Prerequisites
-- [Node.js](https://nodejs.org/) (version 18 or higher recommended)
-- `npm` or `yarn`
+Ensure the following runtimes are installed on your system:
 
-### 2. Installation
+- **Node.js**: Version 18.0.0 or higher
+- **Python**: Version 3.10 to 3.12 (TensorFlow requires Python <= 3.12 on Windows)
+- **Git**
+
+---
+
+## Installation
+
+### 1. Clone Repository
 ```bash
-# Clone the repository
 git clone https://github.com/YOUR_USERNAME/anemia_app.git
-
-# Navigate into the project directory
 cd anemia_app
+```
 
-# Install dependencies
+### 2. Frontend Setup
+Install the Node dependencies:
+```bash
 npm install
 ```
 
-### 3. Environment Variables
-Create a `.env` file in the root directory:
+### 3. Backend Setup
+Set up a Python virtual environment and install the required machine learning and web packages:
+
+**Windows (PowerShell):**
+```powershell
+# Using Python 3.12
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+**Linux / macOS:**
 ```bash
-cp .env.example .env
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Add your Roboflow API key in `.env`:
-```env
-VITE_ROBOFLOW_API_KEY=your_actual_roboflow_api_key
+---
+
+## Running the Servers
+
+The application requires both the Python Flask backend and the React Vite development server to run concurrently.
+
+### Step 1: Start Backend Server (Flask)
+
+Open Terminal 1:
+
+**Windows:**
+```powershell
+.\.venv\Scripts\python.exe app.py
 ```
 
-### 4. Run Development Server
+**Linux / macOS:**
+```bash
+source .venv/bin/activate
+python app.py
+```
+
+- Backend URL: `http://127.0.0.1:5000`
+- Model `model_anemia.h5` will be loaded into memory automatically upon initialization.
+
+### Step 2: Start Frontend Server (Vite)
+
+Open Terminal 2:
+
 ```bash
 npm run dev
 ```
 
-### 5. Build for Production
-```bash
-npm run build
+- Frontend URL: `http://localhost:5173`
+
+Navigate to `http://localhost:5173` in a web browser to use the application.
+
+---
+
+## API Specification
+
+### Endpoint: Predict Anemia Risk
+
+- **URL:** `/predict`
+- **Method:** `POST`
+- **Content-Type:** `multipart/form-data`
+
+#### Request Body
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `image` | Binary File | Yes | Photographic image of palpebral conjunctiva or nailbed (JPEG/PNG). |
+
+#### Response Format (`200 OK`)
+```json
+{
+  "result": "Non-Anemic",
+  "confidence": 67.41
+}
+```
+
+#### Error Response (`400 Bad Request`)
+```json
+{
+  "error": "No image file provided"
+}
 ```
 
 ---
 
-## ⚠️ Medical Disclaimer
-*HerHealth is an AI-assisted screening tool intended for early risk detection and educational use. It does not provide a definitive medical diagnosis. Always consult a certified healthcare professional or visit a Primary Health Centre (PHC) for clinical blood testing.*
+## Production Build
+
+To build the client interface for static deployment:
+
+```bash
+npm run build
+```
+
+Production output will be generated in the `dist/` directory.
+
+---
+
+## Medical Disclaimer
+
+This software is an experimental decision-support and screening prototype. It is intended solely for research, triage, and educational purposes and does not constitute formal clinical diagnosis. Blood laboratory testing (Complete Blood Count) administered by licensed medical practitioners remains the standard for diagnostic confirmation.
